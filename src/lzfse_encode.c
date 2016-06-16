@@ -79,7 +79,7 @@ size_t lzfse_encode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size,
     state->src = src_buffer;
     state->src_encode_i = 0;
 
-    if (src_size >= (1<<15)-1) {
+    if (src_size >= 0xffffffffU) {
       //  lzfse only uses 32 bits for offsets internally, so if the input
       //  buffer is really huge, we need to process it in smaller chunks.
       //  Note that we switch over to this path for sizes much smaller
