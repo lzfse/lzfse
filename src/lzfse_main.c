@@ -185,7 +185,7 @@ int main(int argc, char **argv) {
       }
     }
 
-    ssize_t r = read(in_fd, in + in_size, in_allocated - in_size);
+    ptrdiff_t r = read(in_fd, in + in_size, in_allocated - in_size);
     if (r < 0) {
       perror("read");
       exit(1);
@@ -271,7 +271,7 @@ int main(int argc, char **argv) {
     out_fd = 1; // stdout
   }
   for (size_t out_pos = 0; out_pos < out_size;) {
-    ssize_t w = write(out_fd, out + out_pos, out_size - out_pos);
+    ptrdiff_t w = write(out_fd, out + out_pos, out_size - out_pos);
     if (w < 0) {
       perror("write");
       exit(1);
