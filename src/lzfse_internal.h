@@ -417,9 +417,9 @@ LZFSE_INLINE void store8(void *ptr, uint64_t data) {
 LZFSE_INLINE void copy8(void *dst, const void *src) { store8(dst, load8(src)); }
 LZFSE_INLINE void copy16(void *dst, const void *src) {
   uint64_t m0 = load8(src);
-  uint64_t m1 = load8(src + 8);
+  uint64_t m1 = load8((const unsigned char *)src + 8);
   store8(dst, m0);
-  store8(dst + 8, m1);
+  store8((unsigned char *)dst + 8, m1);
 }
 
 // ===============================================================

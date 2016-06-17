@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2015-2016, Apple Inc. All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
 1.  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
@@ -554,7 +554,7 @@ static size_t lzvn_encode_partial(void *__restrict dst, size_t dst_size,
   state.src_current = 0;
   state.dst = dst;
   state.dst_begin = dst;
-  state.dst_end = dst + dst_size - 8; // reserve 8 bytes for end-of-stream
+  state.dst_end = (unsigned char *)dst + dst_size - 8; // reserve 8 bytes for end-of-stream
   state.table = work;
 
   // Do not encode if the input buffer is too small. We'll emit a literal instead.
@@ -571,7 +571,7 @@ static size_t lzvn_encode_partial(void *__restrict dst, size_t dst_size,
   lzvn_emit_literal(&state, state.src_end - state.src_literal);
 
   // Restore original size, so end-of-stream always succeeds, and emit it
-  state.dst_end = dst + dst_size;
+  state.dst_end = (unsigned char *)dst + dst_size;
   lzvn_emit_end_of_stream(&state);
 
   *src_used = state.src_literal;
