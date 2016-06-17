@@ -540,12 +540,6 @@ fse_value_decode(fse_state *__restrict pstate,
 
 #pragma mark - Tables
 
-/*! @abstract Entry in symbol occurrence table. */
-typedef struct {
-  uint32_t symbol; // Symbol identifier
-  uint32_t count;  // Number of occurrences of symbol (count >= 0)
-} fse_occurrence_entry;
-
 // IMPORTANT: To properly decode an FSE encoded stream, both encoder/decoder
 // tables shall be initialized with the same parameters, including the
 // FREQ[NSYMBOL] array.
@@ -621,12 +615,9 @@ void fse_init_value_decoder_table(int nstates, int nsymbols,
                                   const int32_t *__restrict symbol_vbase,
                                   fse_value_decoder_entry *__restrict t);
 
-/*! @abstract Normalize a table \c t[nsymbols] of symbols,occurrences to
- *  \c freq[nsymbols].
- *  @attention \c t will be modified (sorted) by this call.
- *  @return Return 1 if OK.
- *  @return 0 on failure. */
-int fse_normalize_freq(int nstates, int nsymbols, fse_occurrence_entry *t,
-                       uint16_t *freq);
+/*! @abstract Normalize a table \c t[nsymbols] of occurrences to
+ *  \c freq[nsymbols]. */
+void fse_normalize_freq(int nstates, int nsymbols, const uint32_t *__restrict t,
+                        uint16_t *__restrict freq);
 
 

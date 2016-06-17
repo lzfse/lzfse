@@ -172,10 +172,10 @@ static int lzfse_encode_matches(lzfse_encoder_state *s) {
   if (s->n_literals == 0 && s->n_matches == 0)
     return LZFSE_STATUS_OK; // nothing to store, OK
 
-  fse_occurrence_entry l_occ[LZFSE_ENCODE_L_SYMBOLS];
-  fse_occurrence_entry m_occ[LZFSE_ENCODE_M_SYMBOLS];
-  fse_occurrence_entry d_occ[LZFSE_ENCODE_D_SYMBOLS];
-  fse_occurrence_entry literal_occ[LZFSE_ENCODE_LITERAL_SYMBOLS];
+  uint32_t l_occ[LZFSE_ENCODE_L_SYMBOLS];
+  uint32_t m_occ[LZFSE_ENCODE_M_SYMBOLS];
+  uint32_t d_occ[LZFSE_ENCODE_D_SYMBOLS];
+  uint32_t literal_occ[LZFSE_ENCODE_LITERAL_SYMBOLS];
   fse_encoder_entry l_encoder[LZFSE_ENCODE_L_SYMBOLS];
   fse_encoder_entry m_encoder[LZFSE_ENCODE_M_SYMBOLS];
   fse_encoder_entry d_encoder[LZFSE_ENCODE_D_SYMBOLS];
@@ -206,22 +206,10 @@ static int lzfse_encode_matches(lzfse_encoder_state *s) {
   }
 
   // Clear occurrence tables
-  for (int i = 0; i < LZFSE_ENCODE_L_SYMBOLS; i++) {
-    l_occ[i].symbol = i;
-    l_occ[i].count = 0;
-  }
-  for (int i = 0; i < LZFSE_ENCODE_M_SYMBOLS; i++) {
-    m_occ[i].symbol = i;
-    m_occ[i].count = 0;
-  }
-  for (int i = 0; i < LZFSE_ENCODE_D_SYMBOLS; i++) {
-    d_occ[i].symbol = i;
-    d_occ[i].count = 0;
-  }
-  for (int i = 0; i < LZFSE_ENCODE_LITERAL_SYMBOLS; i++) {
-    literal_occ[i].symbol = i;
-    literal_occ[i].count = 0;
-  }
+  memset(l_occ, 0, sizeof(l_occ));
+  memset(m_occ, 0, sizeof(m_occ));
+  memset(d_occ, 0, sizeof(d_occ));
+  memset(literal_occ, 0, sizeof(literal_occ));
 
   // Update occurrence tables in all 4 streams (L,M,D,literals)
   uint32_t l_sum = 0;
@@ -229,17 +217,17 @@ static int lzfse_encode_matches(lzfse_encoder_state *s) {
   for (uint32_t i = 0; i < s->n_matches; i++) {
     uint32_t l = s->l_values[i];
     l_sum += l;
-    l_occ[l_base_from_value(l)].count++;
+    l_occ[l_base_from_value(l)]++;
   }
   for (uint32_t i = 0; i < s->n_matches; i++) {
     uint32_t m = s->m_values[i];
     m_sum += m;
-    m_occ[m_base_from_value(m)].count++;
+    m_occ[m_base_from_value(m)]++;
   }
   for (uint32_t i = 0; i < s->n_matches; i++)
-    d_occ[d_base_from_value(s->d_values[i])].count++;
+    d_occ[d_base_from_value(s->d_values[i])]++;
   for (uint32_t i = 0; i < s->n_literals; i++)
-    literal_occ[s->literals[i]].count++;
+    literal_occ[s->literals[i]]++;
 
   // Make sure we have enough room for a _full_ V2 header
   if (s->dst + sizeof(lzfse_compressed_block_header_v2) > s->dst_end) {
