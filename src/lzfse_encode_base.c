@@ -689,7 +689,7 @@ int lzfse_encode_base(lzfse_encoder_state *s) {
     // Search best incoming match
     lzfse_match incoming = {.pos = pos, .ref = 0, .length = 0};
 
-    // Check 4 byte matches
+    // Check for matches.  We consider matches of length >= 4 only.
     for (int k = 0; k < LZFSE_ENCODE_HASH_WIDTH; k++) {
       uint32_t d = h.value[k] ^ x;
       if (d)
@@ -718,23 +718,6 @@ int lzfse_encode_base(lzfse_encoder_state *s) {
         incoming.length = length;
         incoming.ref = ref;
       } // keep if longer
-    }
-
-    // Check 3 byte matches if we didn't find anything
-    if (incoming.length == 0) {
-      for (int k = 0; k < LZFSE_ENCODE_HASH_WIDTH; k++) {
-        uint32_t d = h.value[k] ^ x;
-        if (d & 0x00ffffff)
-          continue; // no 3 byte match
-        int32_t ref = h.pos[k];
-        if (ref + LZFSE_ENCODE_MAX_D_VALUE < pos)
-          continue; // too far
-
-        // Keep the first we find, which is the most recent
-        incoming.ref = ref;
-        incoming.length = 3;
-        break;
-      }
     }
 
     // No incoming match?
