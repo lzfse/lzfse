@@ -36,7 +36,15 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#include <sys/types.h>
+
+#if defined(_MSC_VER)
+#  include <io.h>
+#  include <windows.h>
+#else
+#  include <sys/time.h>
+#  include <unistd.h>
+#endif
 
 // Same as realloc(x,s), except x is freed when realloc fails
 static inline void *lzfse_reallocf(void *x, size_t s) {
@@ -48,16 +56,21 @@ static inline void *lzfse_reallocf(void *x, size_t s) {
   return y;
 }
 
-// Get wall clock time
-#include <sys/time.h>
-
 static double get_time() {
+#if defined(_MSC_VER)
+  LARGE_INTEGER count, freq;
+  if (QueryPerformanceFrequency(&freq) && QueryPerformanceCounter(&count)) {
+    return (double)count.QuadPart / (double)freq.QuadPart;
+  }
+  return 1.0e-3 * (double)GetTickCount();
+#else
   struct timeval tv;
   if (gettimeofday(&tv, 0) != 0) {
     perror("gettimeofday");
     exit(1);
   }
   return (double)tv.tv_sec + 1.0e-6 * (double)tv.tv_usec;
+#endif
 }
 
 //--------------------
@@ -146,7 +159,11 @@ int main(int argc, char **argv) {
   if (in_file != 0) {
     // If we have a file name, open it, and allocate the exact input size
     struct stat st;
+#if defined(_WIN32)
+    in_fd = open(in_file, O_RDONLY | O_BINARY);
+#else
     in_fd = open(in_file, O_RDONLY);
+#endif
     if (in_fd < 0) {
       perror(in_file);
       exit(1);
@@ -262,7 +279,12 @@ int main(int argc, char **argv) {
   // Write output
   int out_fd = -1;
   if (out_file) {
+#if defined(_WIN32)
+    out_fd = open(out_file, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,
+      S_IWRITE);
+#else
     out_fd = open(out_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+#endif
     if (out_fd < 0) {
       perror(out_file);
       exit(1);
