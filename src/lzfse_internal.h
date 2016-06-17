@@ -33,6 +33,44 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <stddef.h>
 #include <stdint.h>
 
+// Implement GCC bit scan builtins for MSVC
+#if defined(_MSC_VER) && !defined(__clang__)
+#include <intrin.h>
+
+LZFSE_INLINE int __builtin_clz(unsigned int val) {
+    unsigned long r = 0;
+    if (_BitScanReverse(&r, val)) {
+        return 31 - r;
+    }
+    return 32;
+}
+
+LZFSE_INLINE int __builtin_ctzl(unsigned long val) {
+  unsigned long r = 0;
+  if (_BitScanForward(&r, val)) {
+    return r;
+  }
+  return 32;
+}
+
+LZFSE_INLINE int __builtin_ctzll(uint64_t val) {
+  unsigned long r = 0;
+#if defined(_M_AMD64) || defined(_M_ARM)
+  if (_BitScanForward64(&r, val)) {
+    return r;
+  }
+#else
+  if (_BitScanForward(&r, (uint32_t)val)) {
+    return r;
+  }
+  if (_BitScanForward(&r, (uint32_t)(val >> 32))) {
+    return 32 + r;
+  }
+#endif
+  return 64;
+}
+#endif
+
 //  Throughout LZFSE we refer to "L", "M" and "D"; these will always appear as
 //  a triplet, and represent a "usual" LZ-style literal and match pair.  "L"
 //  is the number of literal bytes, "M" is the number of match bytes, and "D"
