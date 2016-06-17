@@ -11,6 +11,7 @@ Files
 -----
     README.md                             This file ;-)
     Makefile                              Linux / OS X Makefile
+    CMakeLists.txt                        Cross-platform CMake config
     lzfse.xcodeproj                       Xcode project
 
     src/lzfse.h                           Main LZFSE header
@@ -52,6 +53,19 @@ Tested on Ubuntu 15.10 with gcc 5.2.1 and clang 3.6.2. Should work on any recent
 
 Produces the following files in `/tmp/lzfse.dst`:
 
+    usr/local/bin/lzfse                  command line tool
+    usr/local/include/lzfse.h            LZFSE library header
+    usr/local/lib/liblzfse.a             LZFSE library
+
+Building with CMake
+-------------------
+
+Tested on OS X; should additionally work on any recent Linux distribution.
+
+    $ mkdir -p build && pushd build && cmake .. && popd
+    $ make -C build install DESTDIR=/tmp/lzfse.dst/usr/local
+
+Produces the following files in `/tmp/lzfse.dst`:
 
     usr/local/bin/lzfse                  command line tool
     usr/local/include/lzfse.h            LZFSE library header
