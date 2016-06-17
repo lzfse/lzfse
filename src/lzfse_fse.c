@@ -21,17 +21,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 #include "lzfse_internal.h"
 
-// Compare 64-bit unsigned integers for qsort.
-static int compare_counts(const void *a, const void *b) {
-  uint64_t aa = load8(a);
-  uint64_t bb = load8(b);
-  if (aa < bb)
-    return -1;
-  else if (aa > bb)
-    return 1;
-  return 0;
-}
-
 // Initialize encoder table T[NSYMBOLS].
 // NSTATES = sum FREQ[i] is the number of states (a power of 2)
 // NSYMBOLS is the number of symbols.
@@ -157,41 +146,68 @@ void fse_init_value_decoder_table(int nstates, int nsymbols,
   }
 }
 
-// Normalize a table T[NSYMBOLS] of symbols,occurrences to FREQ[NSYMBOLS].
-// IMPORTANT: T will be modified (sorted) by this call.
-// Return 1 if OK, and 0 on failure.
-int fse_normalize_freq(int nstates, int nsymbols, fse_occurrence_entry *t,
-                       uint16_t *freq) {
-  // Sort T in increasing count order. Entry seen as a 64-bit value is (count <<
-  // 32) + symbol_id
-  qsort(t, nsymbols, sizeof(t[0]), compare_counts);
-
-  // Get sum of T.count
-  uint32_t s_count = 0;
-  for (int i = 0; i < nsymbols; i++)
-    s_count += t[i].count;
-
-  // Start from low values
-  uint32_t available = (uint32_t)nstates; // remaining available states
-  for (int i = 0; i < nsymbols; i++) {
-    uint32_t symbol = t[i].symbol;
-    uint32_t count = t[i].count;
-
-    if (count == 0) {
-      freq[symbol] = 0;
-      continue;
-    } // no states used
-    if (available <= 0 || s_count <= 0)
-      return 0; // failed
-    uint32_t k =
-        (uint32_t)((double)count * (double)available / (double)s_count);
-    if (k == 0)
-      k = 1; // if count is not 0, we need at least 1 state to represent it
-    if (i == nsymbols - 1)
-      k = available; // force usage of all states
-    freq[symbol] = (uint16_t)k;
-    s_count -= count;
-    available -= k;
+// Remove states from symbols until the correct number of states is used.
+static void fse_adjust_freqs(uint16_t *freq, int overrun, int nsymbols) {
+  for (int shift = 3; overrun != 0; shift--) {
+    for (int sym = 0; sym < nsymbols; sym++) {
+      if (freq[sym] > 1) {
+        int n = (freq[sym] - 1) >> shift;
+        if (n > overrun)
+          n = overrun;
+        freq[sym] -= n;
+        overrun -= n;
+        if (overrun == 0)
+          break;
+      }
+    }
   }
-  return 1; // OK
+}
+
+// Normalize a table T[NSYMBOLS] of occurrences to FREQ[NSYMBOLS].
+void fse_normalize_freq(int nstates, int nsymbols, const uint32_t *__restrict t,
+                        uint16_t *__restrict freq) {
+  uint32_t s_count = 0;
+  int remaining = nstates; // must be signed; this may become < 0
+  int max_freq = 0;
+  int max_freq_sym = 0;
+  int shift = __builtin_clz(nstates) - 1;
+  uint32_t highprec_step;
+
+  // Compute the total number of symbol occurrences
+  for (int i = 0; i < nsymbols; i++)
+    s_count += t[i];
+
+  highprec_step = ((uint32_t)1 << 31) / s_count;
+
+  for (int i = 0; i < nsymbols; i++) {
+
+    // Rescale the occurrence count to get the normalized frequency.
+    // Round up if the fractional part is >= 0.5; otherwise round down.
+    // For efficiency, we do this calculation using integer arithmetic.
+    int f = (((t[i] * highprec_step) >> shift) + 1) >> 1;
+
+    // If a symbol was used, it must be given a nonzero normalized frequency.
+    if (f == 0 && t[i] != 0)
+      f = 1;
+
+    freq[i] = f;
+    remaining -= f;
+
+    // Remember the maximum frequency and which symbol had it.
+    if (f > max_freq) {
+      max_freq = f;
+      max_freq_sym = i;
+    }
+  }
+
+  // If there remain states to be assigned, then just assign them to the most
+  // frequent symbol.  Alternatively, if we assigned more states than were
+  // actually available, then either remove states from the most frequent symbol
+  // (for minor overruns) or use the slower adjustment algorithm (for major
+  // overruns).
+  if (-remaining < (max_freq >> 2)) {
+    freq[max_freq_sym] += remaining;
+  } else {
+    fse_adjust_freqs(freq, -remaining, nsymbols);
+  }
 }
