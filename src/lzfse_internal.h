@@ -33,6 +33,15 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <stddef.h>
 #include <stdint.h>
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#  define LZFSE_INLINE __forceinline
+#  define __builtin_expect(X, Y) (X)
+#  define __attribute__(X)
+#  pragma warning(disable : 4068) // warning C4068: unknown pragma
+#else
+#  define LZFSE_INLINE static inline __attribute__((__always_inline__))
+#endif
+
 // Implement GCC bit scan builtins for MSVC
 #if defined(_MSC_VER) && !defined(__clang__)
 #include <intrin.h>
@@ -412,8 +421,6 @@ typedef int32_t lzvn_offset;
 #endif
 
 #pragma mark - LZFSE utility functions
-
-#define LZFSE_INLINE static inline __attribute__((__always_inline__))
 
 /*! @abstract Load bytes from memory location SRC. */
 LZFSE_INLINE uint16_t load2(const void *ptr) {

@@ -34,13 +34,18 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 //  Select between 32/64-bit I/O streams for FSE. Note that the FSE stream
 //  size need not match the word size of the machine, but in practice you
 //  want to use 64b streams on 64b systems for better performance.
-#if defined __x86_64__ || defined __arm64__
+#if defined(_M_AMD64) || defined(__x86_64__) || defined(__arm64__)
 #define FSE_IOSTREAM_64 1
 #else
 #define FSE_IOSTREAM_64 0
 #endif
 
-#define FSE_INLINE static inline __attribute__((__always_inline__))
+#if defined(_MSC_VER) && !defined(__clang__)
+#  define FSE_INLINE __forceinline
+#  pragma warning(disable : 4068) // warning C4068: unknown pragma
+#else
+#  define FSE_INLINE static inline __attribute__((__always_inline__))
+#endif
 
 #pragma mark - Bit utils
 
@@ -101,9 +106,11 @@ static inline uint32_t fse_mask_lsb32(uint32_t x, fse_bit_count nbits) {
  *  0 <= start <= start+nbits <= 64 */
 FSE_INLINE uint64_t fse_extract_bits64(uint64_t x, fse_bit_count start,
                                        fse_bit_count nbits) {
+#if defined(__GNUC__)
   // If START and NBITS are constants, map to bit-field extraction instructions
   if (__builtin_constant_p(start) && __builtin_constant_p(nbits))
     return (x >> start) & ((1LLU << nbits) - 1LLU);
+#endif
 
   // Otherwise, shift and mask
   return fse_mask_lsb64(x >> start, nbits);
@@ -113,9 +120,11 @@ FSE_INLINE uint64_t fse_extract_bits64(uint64_t x, fse_bit_count start,
  *  0 <= start <= start+nbits <= 32 */
 FSE_INLINE uint32_t fse_extract_bits32(uint32_t x, fse_bit_count start,
                                        fse_bit_count nbits) {
+#if defined(__GNUC__)
   // If START and NBITS are constants, map to bit-field extraction instructions
   if (__builtin_constant_p(start) && __builtin_constant_p(nbits))
     return (x >> start) & ((1U << nbits) - 1U);
+#endif
 
   // Otherwise, shift and mask
   return fse_mask_lsb32(x >> start, nbits);

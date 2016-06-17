@@ -23,6 +23,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 #include "lzvn_encode_base.h"
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#  define restrict __restrict
+#endif
+
 // ===============================================================
 // Coarse/fine copy, non overlapping buffers
 
