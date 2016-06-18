@@ -21,6 +21,11 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 // LZFSE command line tool
 
+#if !defined(_POSIX_C_SOURCE) || (_POSIX_C_SOURCE < 200112L)
+#  undef _POSIX_C_SOURCE
+#  define _POSIX_C_SOURCE 200112L
+#endif
+
 #if defined(_MSC_VER)
 #  if !defined(_CRT_NONSTDC_NO_DEPRECATE)
 #    define _CRT_NONSTDC_NO_DEPRECATE
