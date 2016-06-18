@@ -271,7 +271,7 @@ FSE_INLINE void fse_out_push32(fse_out_stream32 *s, fse_bit_count n,
   assert(s->accum_nbits == 32 || (s->accum >> s->accum_nbits) == 0);
 }
 
-#if defined FSE_IOSTREAM_64
+#if FSE_IOSTREAM_64
 #define DEBUG_CHECK_INPUT_STREAM_PARAMETERS                                    \
   assert(s->accum_nbits >= 56 && s->accum_nbits < 64);                         \
   assert((s->accum >> s->accum_nbits) == 0);
