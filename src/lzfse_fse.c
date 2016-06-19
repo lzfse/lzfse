@@ -177,7 +177,10 @@ void fse_normalize_freq(int nstates, int nsymbols, const uint32_t *__restrict t,
   for (int i = 0; i < nsymbols; i++)
     s_count += t[i];
 
-  highprec_step = ((uint32_t)1 << 31) / s_count;
+  if (s_count == 0)
+    highprec_step = 0; // no symbols used
+  else
+    highprec_step = ((uint32_t)1 << 31) / s_count;
 
   for (int i = 0; i < nsymbols; i++) {
 
