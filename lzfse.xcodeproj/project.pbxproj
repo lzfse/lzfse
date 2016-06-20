@@ -66,6 +66,7 @@
 		0B1AF7CB1B8CFF58005BF60D /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		0B1AF7D21B8D0EBF005BF60D /* lzfse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lzfse; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B1AF7E11B8D0F59005BF60D /* lzfse_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzfse_main.c; path = src/lzfse_main.c; sourceTree = "<group>"; };
+		0B494D921D18A060002BE277 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0B57822C1B8BC12F002F950F /* liblzfse.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblzfse.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B5782321B8BC151002F950F /* lzfse_decode_base.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzfse_decode_base.c; path = src/lzfse_decode_base.c; sourceTree = "<group>"; };
 		0B5782341B8BC151002F950F /* lzfse_decode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzfse_decode.c; path = src/lzfse_decode.c; sourceTree = "<group>"; };
@@ -77,7 +78,6 @@
 		0B57823A1B8BC151002F950F /* lzfse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lzfse.h; path = src/lzfse.h; sourceTree = "<group>"; };
 		0BA652BD1D0733B20019BFE3 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		0BB39B9E1BE13F12004F4733 /* lzfse_fse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzfse_fse.c; path = src/lzfse_fse.c; sourceTree = "<group>"; };
-		0BC009281C4819CC0068DBA1 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		6301162F1BFE759100D6CAA3 /* lzfse_tunables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = lzfse_tunables.h; path = src/lzfse_tunables.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -141,8 +141,8 @@
 		0B7CB3811B8BBEA500730478 = {
 			isa = PBXGroup;
 			children = (
+				0B494D921D18A060002BE277 /* README.md */,
 				0BA652BD1D0733B20019BFE3 /* LICENSE */,
-				0BC009281C4819CC0068DBA1 /* README */,
 				0B1AF7CB1B8CFF58005BF60D /* Makefile */,
 				0B1AF7CD1B8D0E88005BF60D /* LZFSE command */,
 				0B5782311B8BC13D002F950F /* LZFSE lib */,
