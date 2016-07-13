@@ -39,9 +39,9 @@ Building on OS X
 
 Produces the following files in `/tmp/lzfse.dst`:
 
-    usr/local/bin/lzfse                  command line tool
-    usr/local/include/lzfse.h            LZFSE library header
-    usr/local/lib/liblzfse.a             LZFSE library
+    usr/local/bin/lzfse                   command line tool
+    usr/local/include/lzfse.h             LZFSE library header
+    usr/local/lib/liblzfse.a              LZFSE library
 
 Building on Linux
 -----------------
@@ -53,6 +53,12 @@ Tested on Ubuntu 15.10 with gcc 5.2.1 and clang 3.6.2. Should work on any recent
 Produces the following files in `/tmp/lzfse.dst`:
 
 
-    usr/local/bin/lzfse                  command line tool
-    usr/local/include/lzfse.h            LZFSE library header
-    usr/local/lib/liblzfse.a             LZFSE library
+    usr/local/bin/lzfse                   command line tool
+    usr/local/include/lzfse.h             LZFSE library header
+    usr/local/lib/liblzfse.a              LZFSE library
+
+Bindings
+--------
+
+Python: [dimkr/pylzfse](https://github.com/dimkr/pylzfse)
+
