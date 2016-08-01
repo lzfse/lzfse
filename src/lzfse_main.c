@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2015-2016, Apple Inc. All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
 1.  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
@@ -186,6 +186,12 @@ int main(int argc, char **argv) {
     // Otherwise, read from stdin, and allocate to 1 MB, grow as needed
     in_allocated = 1 << 20;
     in_fd = 0;
+#if defined(_WIN32)
+    if (setmode(in_fd, O_BINARY) == -1) {
+      perror("setmode");
+      exit(1);
+    }
+#endif
   }
   in = (uint8_t *)malloc(in_allocated);
   if (in == 0) {
@@ -296,6 +302,12 @@ int main(int argc, char **argv) {
     }
   } else {
     out_fd = 1; // stdout
+#if defined(_WIN32)
+    if (setmode(out_fd, O_BINARY) == -1) {
+      perror("setmode");
+      exit(1);
+    }
+#endif
   }
   for (size_t out_pos = 0; out_pos < out_size;) {
     ptrdiff_t w = write(out_fd, out + out_pos, out_size - out_pos);
