@@ -24,6 +24,7 @@
 /* Begin PBXBuildFile section */
 		0B1AF7C01B8CF8A2005BF60D /* lzvn_decode_base.c in Sources */ = {isa = PBXBuildFile; fileRef = 0B1AF7B71B8CF8A2005BF60D /* lzvn_decode_base.c */; };
 		0B1AF7C41B8CF8A2005BF60D /* lzvn_encode_base.c in Sources */ = {isa = PBXBuildFile; fileRef = 0B1AF7BB1B8CF8A2005BF60D /* lzvn_encode_base.c */; };
+		0B5782411B8BC151002F950F /* lzvn.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B5782331B8BC151002F950F /* lzvn.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0B1AF7E31B8D0F65005BF60D /* lzfse_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 0B1AF7E11B8D0F59005BF60D /* lzfse_main.c */; };
 		0B1AF7E41B8D1EFD005BF60D /* liblzfse.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B57822C1B8BC12F002F950F /* liblzfse.a */; };
 		0B57823B1B8BC151002F950F /* lzfse_decode_base.c in Sources */ = {isa = PBXBuildFile; fileRef = 0B5782321B8BC151002F950F /* lzfse_decode_base.c */; };
@@ -63,6 +64,7 @@
 		0B1AF7B81B8CF8A2005BF60D /* lzvn_decode_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lzvn_decode_base.h; path = src/lzvn_decode_base.h; sourceTree = "<group>"; };
 		0B1AF7BB1B8CF8A2005BF60D /* lzvn_encode_base.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzvn_encode_base.c; path = src/lzvn_encode_base.c; sourceTree = "<group>"; };
 		0B1AF7BC1B8CF8A2005BF60D /* lzvn_encode_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lzvn_encode_base.h; path = src/lzvn_encode_base.h; sourceTree = "<group>"; };
+		0B5782331B8BC151002F950F /* lzvn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lzvn.h; path = src/lzvn.h; sourceTree = "<group>"; };
 		0B1AF7CB1B8CFF58005BF60D /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		0B1AF7D21B8D0EBF005BF60D /* lzfse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lzfse; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B1AF7E11B8D0F59005BF60D /* lzfse_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lzfse_main.c; path = src/lzfse_main.c; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				0B5782371B8BC151002F950F /* lzfse_encode.c */,
 				0B5782321B8BC151002F950F /* lzfse_decode_base.c */,
 				0B5782341B8BC151002F950F /* lzfse_decode.c */,
+				0B5782331B8BC151002F950F /* lzvn.h */,
 				0B1AF7BC1B8CF8A2005BF60D /* lzvn_encode_base.h */,
 				0B1AF7BB1B8CF8A2005BF60D /* lzvn_encode_base.c */,
 				0B1AF7B81B8CF8A2005BF60D /* lzvn_decode_base.h */,
@@ -158,6 +161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B5782431B8BC151002F950F /* lzfse.h in Headers */,
+				0B5782411B8BC151002F950F /* lzvn.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

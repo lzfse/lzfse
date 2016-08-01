@@ -25,6 +25,7 @@ Files
     src/lzfse_fse.h                       FSE entropy encoder/decoder header
     src/lzfse_fse.c                       FSE entropy encoder/decoder functions
     
+    src/lzfse.h                           Main LZVN header
     src/lzvn_decode_base.h                LZVN decoder
     src/lzvn_decode_base.c
     src/lzvn_encode_base.h                LZVN encoder
@@ -41,6 +42,7 @@ Produces the following files in `/tmp/lzfse.dst`:
 
     usr/local/bin/lzfse                   command line tool
     usr/local/include/lzfse.h             LZFSE library header
+    usr/local/include/lzvn.h              LZVN library header
     usr/local/lib/liblzfse.a              LZFSE library
 
 Building on Linux
@@ -54,6 +56,7 @@ Produces the following files in `/tmp/lzfse.dst`:
 
     usr/local/bin/lzfse                   command line tool
     usr/local/include/lzfse.h             LZFSE library header
+    usr/local/include/lzvn.h              LZVN library header
     usr/local/lib/liblzfse.a              LZFSE library
 
 Building with cmake
