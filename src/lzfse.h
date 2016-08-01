@@ -25,10 +25,15 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+#define LZFSE_EXTERN extern "C"
+#else
+#define LZFSE_EXTERN extern
+#endif
 #define LZFSE_LIB_API __attribute__((visibility("default")))
 
 /*! @abstract Get the required scratch buffer size to compress using LZFSE.   */
-size_t lzfse_encode_scratch_size() LZFSE_LIB_API;
+LZFSE_EXTERN size_t lzfse_encode_scratch_size() LZFSE_LIB_API;
 
 /*! @abstract Compress a buffer using LZFSE.
  *
@@ -59,14 +64,14 @@ size_t lzfse_encode_scratch_size() LZFSE_LIB_API;
  *  successfully compressed. If the input cannot be compressed to fit into
  *  the provided buffer, or an error occurs, zero is returned, and the
  *  contents of dst_buffer are unspecified.                                   */
-size_t lzfse_encode_buffer(uint8_t *__restrict dst_buffer,
-                           size_t dst_size,
-                           const uint8_t *__restrict src_buffer,
-                           size_t src_size,
-                           void *__restrict scratch_buffer) LZFSE_LIB_API;
+LZFSE_EXTERN size_t lzfse_encode_buffer(uint8_t *__restrict dst_buffer,
+                                        size_t dst_size,
+                                        const uint8_t *__restrict src_buffer,
+                                        size_t src_size,
+                                        void *__restrict scratch_buffer) LZFSE_LIB_API;
 
 /*! @abstract Get the required scratch buffer size to decompress using LZFSE. */
-size_t lzfse_decode_scratch_size() LZFSE_LIB_API;
+LZFSE_EXTERN size_t lzfse_decode_scratch_size() LZFSE_LIB_API;
 
 /*! @abstract Decompress a buffer using LZFSE.
  *
@@ -98,10 +103,10 @@ size_t lzfse_decode_scratch_size() LZFSE_LIB_API;
  *  buffer to hold the entire expanded output, only the first dst_size bytes
  *  will be written to the buffer and dst_size is returned. Note that this
  *  behavior differs from that of lzfse_encode_buffer.                        */
-size_t lzfse_decode_buffer(uint8_t *__restrict dst_buffer,
-                           size_t dst_size,
-                           const uint8_t *__restrict src_buffer,
-                           size_t src_size,
-                           void *__restrict scratch_buffer) LZFSE_LIB_API;
+LZFSE_EXTERN size_t lzfse_decode_buffer(uint8_t *__restrict dst_buffer,
+                                        size_t dst_size,
+                                        const uint8_t *__restrict src_buffer,
+                                        size_t src_size,
+                                        void *__restrict scratch_buffer) LZFSE_LIB_API;
 
 #endif // LZFSE_H
