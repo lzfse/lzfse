@@ -26,9 +26,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <stdint.h>
 
 #ifdef __cplusplus
-#define LZFSE_EXTERN extern "C"
-#else
-#define LZFSE_EXTERN extern
+extern "C" {
 #endif
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -36,10 +34,26 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #  pragma warning(disable : 4068)
 #endif
 
-#define LZFSE_LIB_API __attribute__((visibility("default")))
+#if defined(LZFSE_DLL)
+#  if defined(_WIN32) || defined(__CYGWIN__)
+#    if defined(LZFSE_DLL_EXPORTS)
+#      define LZFSE_API __declspec(dllexport)
+#    else
+#      define LZFSE_API __declspec(dllimport)
+#    endif
+#  endif
+#endif
+
+#if !defined(LZFSE_API)
+#  if __GNUC__ >= 4
+#    define LZFSE_API __attribute__((visibility("default")))
+#  else
+#    define LZFSE_API
+#  endif
+#endif
 
 /*! @abstract Get the required scratch buffer size to compress using LZFSE.   */
-LZFSE_EXTERN size_t lzfse_encode_scratch_size() LZFSE_LIB_API;
+LZFSE_API size_t lzfse_encode_scratch_size();
 
 /*! @abstract Compress a buffer using LZFSE.
  *
@@ -70,14 +84,14 @@ LZFSE_EXTERN size_t lzfse_encode_scratch_size() LZFSE_LIB_API;
  *  successfully compressed. If the input cannot be compressed to fit into
  *  the provided buffer, or an error occurs, zero is returned, and the
  *  contents of dst_buffer are unspecified.                                   */
-LZFSE_EXTERN size_t lzfse_encode_buffer(uint8_t *__restrict dst_buffer,
-                                        size_t dst_size,
-                                        const uint8_t *__restrict src_buffer,
-                                        size_t src_size,
-                                        void *__restrict scratch_buffer) LZFSE_LIB_API;
+LZFSE_API size_t lzfse_encode_buffer(uint8_t *__restrict dst_buffer,
+                                     size_t dst_size,
+                                     const uint8_t *__restrict src_buffer,
+                                     size_t src_size,
+                                     void *__restrict scratch_buffer);
 
 /*! @abstract Get the required scratch buffer size to decompress using LZFSE. */
-LZFSE_EXTERN size_t lzfse_decode_scratch_size() LZFSE_LIB_API;
+LZFSE_API size_t lzfse_decode_scratch_size();
 
 /*! @abstract Decompress a buffer using LZFSE.
  *
@@ -109,10 +123,14 @@ LZFSE_EXTERN size_t lzfse_decode_scratch_size() LZFSE_LIB_API;
  *  buffer to hold the entire expanded output, only the first dst_size bytes
  *  will be written to the buffer and dst_size is returned. Note that this
  *  behavior differs from that of lzfse_encode_buffer.                        */
-LZFSE_EXTERN size_t lzfse_decode_buffer(uint8_t *__restrict dst_buffer,
-                                        size_t dst_size,
-                                        const uint8_t *__restrict src_buffer,
-                                        size_t src_size,
-                                        void *__restrict scratch_buffer) LZFSE_LIB_API;
+LZFSE_API size_t lzfse_decode_buffer(uint8_t *__restrict dst_buffer,
+                                     size_t dst_size,
+                                     const uint8_t *__restrict src_buffer,
+                                     size_t src_size,
+                                     void *__restrict scratch_buffer);
 
-#endif // LZFSE_H
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+#endif /* LZFSE_H */
