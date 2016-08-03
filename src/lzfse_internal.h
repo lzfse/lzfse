@@ -33,6 +33,53 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include <stddef.h>
 #include <stdint.h>
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#  define LZFSE_INLINE __forceinline
+#  define __builtin_expect(X, Y) (X)
+#  define __attribute__(X)
+#  pragma warning(disable : 4068) // warning C4068: unknown pragma
+#else
+#  define LZFSE_INLINE static inline __attribute__((__always_inline__))
+#endif
+
+// Implement GCC bit scan builtins for MSVC
+#if defined(_MSC_VER) && !defined(__clang__)
+#include <intrin.h>
+
+LZFSE_INLINE int __builtin_clz(unsigned int val) {
+    unsigned long r = 0;
+    if (_BitScanReverse(&r, val)) {
+        return 31 - r;
+    }
+    return 32;
+}
+
+LZFSE_INLINE int __builtin_ctzl(unsigned long val) {
+  unsigned long r = 0;
+  if (_BitScanForward(&r, val)) {
+    return r;
+  }
+  return 32;
+}
+
+LZFSE_INLINE int __builtin_ctzll(uint64_t val) {
+  unsigned long r = 0;
+#if defined(_M_AMD64) || defined(_M_ARM)
+  if (_BitScanForward64(&r, val)) {
+    return r;
+  }
+#else
+  if (_BitScanForward(&r, (uint32_t)val)) {
+    return r;
+  }
+  if (_BitScanForward(&r, (uint32_t)(val >> 32))) {
+    return 32 + r;
+  }
+#endif
+  return 64;
+}
+#endif
+
 //  Throughout LZFSE we refer to "L", "M" and "D"; these will always appear as
 //  a triplet, and represent a "usual" LZ-style literal and match pair.  "L"
 //  is the number of literal bytes, "M" is the number of match bytes, and "D"
@@ -375,8 +422,6 @@ typedef int32_t lzvn_offset;
 
 #pragma mark - LZFSE utility functions
 
-#define LZFSE_INLINE static inline __attribute__((__always_inline__))
-
 /*! @abstract Load bytes from memory location SRC. */
 LZFSE_INLINE uint16_t load2(const void *ptr) {
   uint16_t data;
@@ -417,9 +462,9 @@ LZFSE_INLINE void store8(void *ptr, uint64_t data) {
 LZFSE_INLINE void copy8(void *dst, const void *src) { store8(dst, load8(src)); }
 LZFSE_INLINE void copy16(void *dst, const void *src) {
   uint64_t m0 = load8(src);
-  uint64_t m1 = load8(src + 8);
+  uint64_t m1 = load8((const unsigned char *)src + 8);
   store8(dst, m0);
-  store8(dst + 8, m1);
+  store8((unsigned char *)dst + 8, m1);
 }
 
 // ===============================================================

@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2015-2016, Apple Inc. All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
 1.  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
@@ -21,13 +21,35 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 // LZFSE command line tool
 
+#if !defined(_POSIX_C_SOURCE) || (_POSIX_C_SOURCE < 200112L)
+#  undef _POSIX_C_SOURCE
+#  define _POSIX_C_SOURCE 200112L
+#endif
+
+#if defined(_MSC_VER)
+#  if !defined(_CRT_NONSTDC_NO_DEPRECATE)
+#    define _CRT_NONSTDC_NO_DEPRECATE
+#  endif
+#  if !defined(_CRT_SECURE_NO_WARNINGS)
+#    define _CRT_SECURE_NO_WARNINGS
+#  endif
+#endif
+
 #include "lzfse.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#include <sys/types.h>
+
+#if defined(_MSC_VER)
+#  include <io.h>
+#  include <windows.h>
+#else
+#  include <sys/time.h>
+#  include <unistd.h>
+#endif
 
 // Same as realloc(x,s), except x is freed when realloc fails
 static inline void *lzfse_reallocf(void *x, size_t s) {
@@ -39,16 +61,21 @@ static inline void *lzfse_reallocf(void *x, size_t s) {
   return y;
 }
 
-// Get wall clock time
-#include <sys/time.h>
-
 static double get_time() {
+#if defined(_MSC_VER)
+  LARGE_INTEGER count, freq;
+  if (QueryPerformanceFrequency(&freq) && QueryPerformanceCounter(&count)) {
+    return (double)count.QuadPart / (double)freq.QuadPart;
+  }
+  return 1.0e-3 * (double)GetTickCount();
+#else
   struct timeval tv;
   if (gettimeofday(&tv, 0) != 0) {
     perror("gettimeofday");
     exit(1);
   }
   return (double)tv.tv_sec + 1.0e-6 * (double)tv.tv_usec;
+#endif
 }
 
 //--------------------
@@ -137,7 +164,11 @@ int main(int argc, char **argv) {
   if (in_file != 0) {
     // If we have a file name, open it, and allocate the exact input size
     struct stat st;
+#if defined(_WIN32)
+    in_fd = open(in_file, O_RDONLY | O_BINARY);
+#else
     in_fd = open(in_file, O_RDONLY);
+#endif
     if (in_fd < 0) {
       perror(in_file);
       exit(1);
@@ -155,6 +186,12 @@ int main(int argc, char **argv) {
     // Otherwise, read from stdin, and allocate to 1 MB, grow as needed
     in_allocated = 1 << 20;
     in_fd = 0;
+#if defined(_WIN32)
+    if (setmode(in_fd, O_BINARY) == -1) {
+      perror("setmode");
+      exit(1);
+    }
+#endif
   }
   in = (uint8_t *)malloc(in_allocated);
   if (in == 0) {
@@ -176,7 +213,7 @@ int main(int argc, char **argv) {
       }
     }
 
-    ssize_t r = read(in_fd, in + in_size, in_allocated - in_size);
+    ptrdiff_t r = read(in_fd, in + in_size, in_allocated - in_size);
     if (r < 0) {
       perror("read");
       exit(1);
@@ -253,16 +290,27 @@ int main(int argc, char **argv) {
   // Write output
   int out_fd = -1;
   if (out_file) {
+#if defined(_WIN32)
+    out_fd = open(out_file, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,
+      S_IWRITE);
+#else
     out_fd = open(out_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+#endif
     if (out_fd < 0) {
       perror(out_file);
       exit(1);
     }
   } else {
     out_fd = 1; // stdout
+#if defined(_WIN32)
+    if (setmode(out_fd, O_BINARY) == -1) {
+      perror("setmode");
+      exit(1);
+    }
+#endif
   }
   for (size_t out_pos = 0; out_pos < out_size;) {
-    ssize_t w = write(out_fd, out + out_pos, out_size - out_pos);
+    ptrdiff_t w = write(out_fd, out + out_pos, out_size - out_pos);
     if (w < 0) {
       perror("write");
       exit(1);
