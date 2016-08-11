@@ -111,7 +111,7 @@ LZFSE_INLINE int __builtin_ctzll(uint64_t val) {
 //  systems, this is stored in a 64-bit container to avoid extra sign-
 //  extension operations in addressing arithmetic, but the value is always
 //  representable as a 32-bit signed value in LZFSE's usage.
-#if defined __x86_64__ || defined __arm64__
+#if defined(_M_AMD64) || defined(__x86_64__) || defined(__arm64__)
 typedef int64_t lzfse_offset;
 #else
 typedef int32_t lzfse_offset;
@@ -414,7 +414,7 @@ size_t lzvn_decode_buffer(void *__restrict dst, size_t dst_size,
                           const void *__restrict src, size_t src_size);
 
 /*! @abstract Signed offset in buffers, stored on either 32 or 64 bits. */
-#if defined(__x86_64__) || defined(__arm64__)
+#if defined(_M_AMD64) || defined(__x86_64__) || defined(__arm64__)
 typedef int64_t lzvn_offset;
 #else
 typedef int32_t lzvn_offset;
