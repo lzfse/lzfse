@@ -631,8 +631,8 @@ copy_literal:
 // Other opcodes
 nop:
 #if !HAVE_LABELS_AS_VALUES
-  case 6:
   case 14:
+  case 22:
 #endif
   UPDATE_GOOD;
   opc_len = 1;
@@ -648,7 +648,7 @@ nop:
 
 eos:
 #if !HAVE_LABELS_AS_VALUES
-  case 22:
+  case 6:
 #endif
   opc_len = 8;
   if (src_len < opc_len)
