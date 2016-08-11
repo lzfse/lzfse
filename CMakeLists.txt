@@ -51,6 +51,12 @@ function(lzfse_add_compiler_flags target)
   endforeach()
 endfunction()
 
+if (ENABLE_SANITIZER)
+  set(CMAKE_C_FLAGS " ${CMAKE_C_FLAGS} -fsanitize=${ENABLE_SANITIZER}")
+  set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -fsanitize=${ENABLE_SANITIZER}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${ENABLE_SANITIZER}")
+endif ()
+
 add_library(lzfse
   src/lzfse_decode.c
   src/lzfse_decode_base.c
