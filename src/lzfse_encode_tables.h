@@ -22,6 +22,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #ifndef LZFSE_ENCODE_TABLES_H
 #define LZFSE_ENCODE_TABLES_H
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#  define inline __inline
+#endif
+
 static inline uint8_t l_base_from_value(int32_t value) {
   static const uint8_t sym[LZFSE_ENCODE_MAX_L_VALUE + 1] = {
       0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 16,
