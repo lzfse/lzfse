@@ -51,6 +51,12 @@ function(lzfse_add_compiler_flags target)
   endforeach()
 endfunction()
 
+if (ENABLE_SANITIZER)
+  set(CMAKE_C_FLAGS " ${CMAKE_C_FLAGS} -fsanitize=${ENABLE_SANITIZER}")
+  set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -fsanitize=${ENABLE_SANITIZER}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${ENABLE_SANITIZER}")
+endif ()
+
 add_library(lzfse
   src/lzfse_decode.c
   src/lzfse_decode_base.c
@@ -94,4 +100,38 @@ if(NOT LZFSE_BUNDLE_MODE)
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
   install(FILES src/lzfse.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+endif()
+
+# Tests
+
+# If we're targeting Windows but not running on Windows, we need Wine
+# to run the tests...
+if(NOT LZFSE_DISABLE_TESTS)
+  if(WIN32 AND NOT CMAKE_HOST_WIN32)
+    find_program(LZFSE_WINE NAMES wine)
+
+    if(NOT LZFSE_WINE)
+      message(STATUS "wine not found, disabling tests")
+      set(LZFSE_DISABLE_TESTS TRUE)
+    endif()
+  endif()
+endif()
+
+if(NOT LZFSE_DISABLE_TESTS)
+  include(CTest)
+  enable_testing()
+
+  file(GLOB_RECURSE
+    ROUNDTRIP_INPUTS
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    src/*)
+
+  foreach(INPUT ${ROUNDTRIP_INPUTS})
+    add_test(NAME "${LZFSE_TEST_PREFIX}roundtrip/${INPUT}"
+      COMMAND "${CMAKE_COMMAND}"
+        -DLZFSE_WRAPPER=${LZFSE_WINE}
+        -DLZFSE_CLI=$<TARGET_FILE:lzfse_cli>
+        -DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/${INPUT}
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/round-trip.cmake)
+  endforeach()
 endif()
