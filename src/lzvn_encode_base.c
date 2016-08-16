@@ -67,8 +67,8 @@ static inline unsigned char *emit_literal(const unsigned char *p,
     x = L < 271 ? L : 271;
     if (q + x + 10 >= q1)
       goto OUT_FULL;
-    *(uint16_t *)q = 0xE0 + ((x - 16) << 8);
-    q += 2; // non-aligned access OK
+    store2(q, 0xE0 + ((x - 16) << 8));
+    q += 2;
     L -= x;
     q = lzvn_copy8(q, p, x);
     p += x;
@@ -100,8 +100,8 @@ static inline unsigned char *emit(const unsigned char *p, unsigned char *q,
     x = L < 271 ? L : 271;
     if (q + x + 10 >= q1)
       goto OUT_FULL;
-    *(uint16_t *)q = 0xE0 + ((x - 16) << 8);
-    q += 2; // non-aligned access OK
+    store2(q, 0xE0 + ((x - 16) << 8));
+    q += 2;
     L -= x;
     q = lzvn_copy64(q, p, x);
     p += x;
@@ -119,8 +119,7 @@ static inline unsigned char *emit(const unsigned char *p, unsigned char *q,
   x -= 3; // M = (x+3) + M'    max value for x is 7-2*L
 
   // Here L<4 literals remaining, we read them here
-  uint32_t literal =
-      *(uint32_t *)p; // read 4 literal bytes, non-aligned access OK
+  uint32_t literal = load4(p);
   // P is not accessed after this point
 
   // Relaxed capacity test covering all cases
@@ -133,30 +132,30 @@ static inline unsigned char *emit(const unsigned char *p, unsigned char *q,
     } else {
       *q++ = (L << 6) + (x << 3) + 6; //  LLxxx110
     }
-    *(uint32_t *)q = literal;
-    q += L; // non-aligned access OK
+    store4(q, literal);
+    q += L;
   } else if (D < 2048 - 2 * 256) {
     // Short dist    D>>8 in 0..5
     *q++ = (D >> 8) + (L << 6) + (x << 3); // LLxxxDDD
     *q++ = D & 0xFF;
-    *(uint32_t *)q = literal;
-    q += L; // non-aligned access OK
+    store4(q, literal);
+    q += L;
   } else if (D >= (1 << 14) || M == 0 || (x + 3) + M > 34) {
     // Long dist
     *q++ = (L << 6) + (x << 3) + 7;
-    *(uint16_t *)q = D;
-    q += 2; // non-aligned access OK
-    *(uint32_t *)q = literal;
-    q += L; // non-aligned access OK
+    store2(q, D);
+    q += 2;
+    store4(q, literal);
+    q += L;
   } else {
     // Medium distance
     x += M;
     M = 0;
     *q++ = 0xA0 + (x >> 2) + (L << 3);
-    *(uint16_t *)q = D << 2 | (x & 3);
-    q += 2; // non-aligned access OK
-    *(uint32_t *)q = literal;
-    q += L; // non-aligned access OK
+    store2(q, D << 2 | (x & 3));
+    q += 2;
+    store4(q, literal);
+    q += L;
   }
 
   // Issue remaining match
@@ -164,8 +163,8 @@ static inline unsigned char *emit(const unsigned char *p, unsigned char *q,
     if (q + 2 >= q1)
       goto OUT_FULL;
     x = M < 271 ? M : 271;
-    *(uint16_t *)q = 0xf0 + ((x - 16) << 8);
-    q += 2; // non-aligned access OK
+    store2(q, 0xf0 + ((x - 16) << 8));
+    q += 2;
     M -= x;
   }
   if (M > 0) {

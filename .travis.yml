@@ -131,15 +131,15 @@ matrix:
           - llvm-toolchain-precise-3.8
           packages:
           - clang-3.8
-    # - os: linux
-    #   env: C_COMPILER=clang-3.8 SANITIZER=undefined CFLAGS="-fno-sanitize-recover=undefined,integer"
-    #   addons:
-    #     apt:
-    #       sources:
-    #       - ubuntu-toolchain-r-test
-    #       - llvm-toolchain-precise-3.8
-    #       packages:
-    #       - clang-3.8
+    - os: linux
+      env: C_COMPILER=clang-3.8 SANITIZER=undefined CFLAGS="-fno-sanitize-recover=undefined,integer"
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-precise-3.8
+          packages:
+          - clang-3.8
 
 before_install:
 ###
