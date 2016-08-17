@@ -42,6 +42,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 #if defined(_MSC_VER) && !defined(__clang__)
 #  define FSE_INLINE __forceinline
+#  define inline __inline
 #  pragma warning(disable : 4068) // warning C4068: unknown pragma
 #else
 #  define FSE_INLINE static inline __attribute__((__always_inline__))

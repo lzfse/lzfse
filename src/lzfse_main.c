@@ -33,6 +33,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #  if !defined(_CRT_SECURE_NO_WARNINGS)
 #    define _CRT_SECURE_NO_WARNINGS
 #  endif
+#  if !defined(__clang__)
+#    define inline __inline
+#  endif
 #endif
 
 #include "lzfse.h"
