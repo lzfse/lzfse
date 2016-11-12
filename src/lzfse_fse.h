@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2015-2016, Apple Inc. All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
 1.  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
@@ -48,7 +48,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #  define FSE_INLINE static inline __attribute__((__always_inline__))
 #endif
 
-#pragma mark - Bit utils
+// MARK: - Bit utils
 
 /*! @abstract Signed type used to represent bit count. */
 typedef int32_t fse_bit_count;
@@ -131,7 +131,7 @@ FSE_INLINE uint32_t fse_extract_bits32(uint32_t x, fse_bit_count start,
   return fse_mask_lsb32(x >> start, nbits);
 }
 
-#pragma mark - Bit stream
+// MARK: - Bit stream
 
 // I/O streams
 // The streams can be shared between several FSE encoders/decoders, which is why
@@ -421,7 +421,7 @@ FSE_INLINE uint32_t fse_in_pull32(fse_in_stream32 *s, fse_bit_count n) {
   return result;
 }
 
-#pragma mark - Encode/Decode
+// MARK: - Encode/Decode
 
 // Map to 32/64-bit implementations and types for I/O
 #if FSE_IOSTREAM_64
@@ -548,7 +548,7 @@ fse_value_decode(fse_state *__restrict pstate,
                    fse_mask_lsb(state_and_value_bits, entry.value_bits));
 }
 
-#pragma mark - Tables
+// MARK: - Tables
 
 // IMPORTANT: To properly decode an FSE encoded stream, both encoder/decoder
 // tables shall be initialized with the same parameters, including the
@@ -629,5 +629,3 @@ void fse_init_value_decoder_table(int nstates, int nsymbols,
  *  \c freq[nsymbols]. */
 void fse_normalize_freq(int nstates, int nsymbols, const uint32_t *__restrict t,
                         uint16_t *__restrict freq);
-
-

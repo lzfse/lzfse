@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2015-2016, Apple Inc. All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
 1.  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
@@ -152,7 +152,7 @@ typedef struct {
   uint32_t length;
 } lzfse_match;
 
-#pragma mark - Encoder and Decoder state objects
+// MARK: - Encoder and Decoder state objects
 
 /*! @abstract Encoder state object. */
 typedef struct {
@@ -271,7 +271,7 @@ typedef struct {
   uncompressed_block_decoder_state uncompressed_block_state;
 } lzfse_decoder_state;
 
-#pragma mark - Block header objects
+// MARK: - Block header objects
 
 #define LZFSE_NO_BLOCK_MAGIC             0x00000000 // 0    (invalid)
 #define LZFSE_ENDOFSTREAM_BLOCK_MAGIC    0x24787662 // bvx$ (end of stream)
@@ -304,7 +304,7 @@ typedef struct {
   uint32_t n_literal_payload_bytes;
   //  Number of bytes used to encode matches.
   uint32_t n_lmd_payload_bytes;
-  
+
   //  Final encoder states for the block, which will be the initial states for
   //  the decoder:
   //  Final accum_nbits for literals stream.
@@ -320,7 +320,7 @@ typedef struct {
   uint16_t m_state;
   //  Final D (match distance) state.
   uint16_t d_state;
-  
+
   //  Normalized frequency tables for each stream. Sum of values in each
   //  array is the number of states.
   uint16_t l_freq[LZFSE_ENCODE_L_SYMBOLS];
@@ -383,7 +383,7 @@ typedef struct {
   uint32_t n_payload_bytes;
 } lzvn_compressed_block_header;
 
-#pragma mark - LZFSE encode/decode interfaces
+// MARK: - LZFSE encode/decode interfaces
 
 int lzfse_encode_init(lzfse_encoder_state *s);
 int lzfse_encode_translate(lzfse_encoder_state *s, lzfse_offset delta);
@@ -391,7 +391,7 @@ int lzfse_encode_base(lzfse_encoder_state *s);
 int lzfse_encode_finish(lzfse_encoder_state *s);
 int lzfse_decode(lzfse_decoder_state *s);
 
-#pragma mark - LZVN encode/decode interfaces
+// MARK: - LZVN encode/decode interfaces
 
 //  Minimum source buffer size for compression. Smaller buffers will not be
 //  compressed; the lzvn encoder will simply return.
@@ -420,7 +420,7 @@ typedef int64_t lzvn_offset;
 typedef int32_t lzvn_offset;
 #endif
 
-#pragma mark - LZFSE utility functions
+// MARK: - LZFSE utility functions
 
 /*! @abstract Load bytes from memory location SRC. */
 LZFSE_INLINE uint16_t load2(const void *ptr) {
@@ -566,7 +566,7 @@ LZFSE_INLINE int lzfse_check_block_header_v1(
   return 0; // OK
 }
 
-#pragma mark - L, M, D encoding constants for LZFSE
+// MARK: - L, M, D encoding constants for LZFSE
 
 //  Largest encodable L (literal length), M (match length) and D (match
 //  distance) values.
