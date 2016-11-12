@@ -585,25 +585,25 @@ LZFSE_INLINE int lzfse_check_block_header_v1(
  * @note The inverse tables for mapping the other way are significantly larger.
  * Those tables have been split out to lzfse_encode_tables.h in order to keep
  * this file relatively small. */
-static uint8_t l_extra_bits[LZFSE_ENCODE_L_SYMBOLS] = {
+static const uint8_t l_extra_bits[LZFSE_ENCODE_L_SYMBOLS] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 5, 8
 };
-static int32_t l_base_value[LZFSE_ENCODE_L_SYMBOLS] = {
+static const int32_t l_base_value[LZFSE_ENCODE_L_SYMBOLS] = {
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 28, 60
 };
-static uint8_t m_extra_bits[LZFSE_ENCODE_M_SYMBOLS] = {
+static const uint8_t m_extra_bits[LZFSE_ENCODE_M_SYMBOLS] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 5, 8, 11
 };
-static int32_t m_base_value[LZFSE_ENCODE_M_SYMBOLS] = {
+static const int32_t m_base_value[LZFSE_ENCODE_M_SYMBOLS] = {
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 24, 56, 312
 };
-static uint8_t d_extra_bits[LZFSE_ENCODE_D_SYMBOLS] = {
+static const uint8_t d_extra_bits[LZFSE_ENCODE_D_SYMBOLS] = {
   0,  0,  0,  0,  1,  1,  1,  1,  2,  2,  2,  2,  3,  3,  3,  3,
   4,  4,  4,  4,  5,  5,  5,  5,  6,  6,  6,  6,  7,  7,  7,  7,
   8,  8,  8,  8,  9,  9,  9,  9,  10, 10, 10, 10, 11, 11, 11, 11,
   12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15
 };
-static int32_t d_base_value[LZFSE_ENCODE_D_SYMBOLS] = {
+static const int32_t d_base_value[LZFSE_ENCODE_D_SYMBOLS] = {
   0,      1,      2,      3,     4,     6,     8,     10,    12,    16,
   20,     24,     28,     36,    44,    52,    60,    76,    92,    108,
   124,    156,    188,    220,   252,   316,   380,   444,   508,   636,
