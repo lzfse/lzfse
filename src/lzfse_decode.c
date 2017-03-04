@@ -19,6 +19,8 @@ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABI
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <stdio.h>
+
 // LZFSE decode API
 
 #include "lzfse.h"
@@ -26,9 +28,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 size_t lzfse_decode_scratch_size() { return sizeof(lzfse_decoder_state); }
 
-size_t lzfse_decode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size,
-                           const uint8_t *__restrict src_buffer,
-                           size_t src_size, void *__restrict scratch_buffer) {
+size_t lzfse_do_decode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size,
+                              const uint8_t *__restrict src_buffer,
+                              size_t src_size, void *__restrict scratch_buffer) {
   lzfse_decoder_state *s = (lzfse_decoder_state *)scratch_buffer;
   memset(s, 0x00, sizeof(*s));
 
@@ -48,3 +50,24 @@ size_t lzfse_decode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size,
     return 0;                           // failed
   return (size_t)(s->dst - dst_buffer); // bytes written
 }
+
+size_t lzfse_decode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size,
+                           const uint8_t *__restrict src_buffer,
+                           size_t src_size, void *__restrict scratch_buffer) {
+  int has_malloc = 0;
+  size_t ret = 0;
+
+  // Deal with the possible NULL pointer
+  if (scratch_buffer == NULL) {
+    scratch_buffer = malloc(lzfse_encode_scratch_size());
+    has_malloc = 1;
+  }
+  if (scratch_buffer == NULL) {
+    perror("malloc");
+    return 0;
+  }
+  ret = lzfse_do_decode_buffer(dst_buffer, dst_size, src_buffer, src_size, scratch_buffer);
+  if (has_malloc)
+    free(scratch_buffer);
+  return ret;
+} 
