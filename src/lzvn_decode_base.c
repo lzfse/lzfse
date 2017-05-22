@@ -21,6 +21,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 // LZVN low-level decoder
 
+#include "lzvn.h"
 #include "lzvn_decode_base.h"
 
 #if !defined(HAVE_LABELS_AS_VALUES)
@@ -709,3 +710,20 @@ invalid_match_distance:
   }
 #endif
 }
+
+size_t lzvn_decode_buffer(uint8_t *__restrict dst_buffer, size_t dst_size,
+                          const uint8_t *__restrict src_buffer,
+                          size_t src_size, void *__restrict scratch_buffer) {
+  lzvn_decoder_state *state = (lzvn_decoder_state *)scratch_buffer;
+  memset(state, 0x00, sizeof(*state));
+
+  state->src = src_buffer;
+  state->src_end = state->src + src_size;
+  state->dst = dst_buffer;
+  state->dst_begin = dst_buffer;
+  state->dst_end = dst_buffer + dst_size;
+
+  lzvn_decode(state);
+  return (size_t)(state->dst - dst_buffer);
+}
+

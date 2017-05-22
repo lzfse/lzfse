@@ -21,6 +21,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 // LZVN low-level encoder
 
+#include "lzvn.h"
 #include "lzvn_encode_base.h"
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -581,12 +582,12 @@ static size_t lzvn_encode_partial(void *__restrict dst, size_t dst_size,
   return (size_t)(state.dst - state.dst_begin);
 }
 
-size_t lzvn_encode_buffer(void *__restrict dst, size_t dst_size,
-                          const void *__restrict src, size_t src_size,
-                          void *__restrict work) {
+size_t lzvn_encode_buffer(uint8_t *__restrict dst, size_t dst_size,
+                          const uint8_t *__restrict src, size_t src_size,
+                          void *__restrict scratch_buffer) {
   size_t src_used = 0;
   size_t dst_used =
-      lzvn_encode_partial(dst, dst_size, src, src_size, &src_used, work);
+      lzvn_encode_partial(dst, dst_size, src, src_size, &src_used, scratch_buffer);
   if (src_used != src_size)
     return 0;      // could not encode entire input stream = fail
   return dst_used; // return encoded size

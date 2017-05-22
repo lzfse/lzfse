@@ -23,6 +23,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
 #include "lzfse.h"
 #include "lzfse_internal.h"
+#include "lzvn.h"
 
 size_t lzfse_encode_scratch_size() {
   size_t s1 = sizeof(lzfse_encoder_state);

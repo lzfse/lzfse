@@ -405,14 +405,6 @@ int lzfse_decode(lzfse_decoder_state *s);
 //  place if smaller.
 #define LZVN_ENCODE_MIN_DST_SIZE ((size_t)8)
 
-size_t lzvn_decode_scratch_size(void);
-size_t lzvn_encode_scratch_size(void);
-size_t lzvn_encode_buffer(void *__restrict dst, size_t dst_size,
-                          const void *__restrict src, size_t src_size,
-                          void *__restrict work);
-size_t lzvn_decode_buffer(void *__restrict dst, size_t dst_size,
-                          const void *__restrict src, size_t src_size);
-
 /*! @abstract Signed offset in buffers, stored on either 32 or 64 bits. */
 #if defined(_M_AMD64) || defined(__x86_64__) || defined(__arm64__)
 typedef int64_t lzvn_offset;

@@ -44,6 +44,7 @@ install: $(LZFSE_LIB) $(LZFSE_CMD)
 	@[ -d $(INSTALL_PREFIX)/lib ] || mkdir -p $(INSTALL_PREFIX)/lib
 	@[ -d $(INSTALL_PREFIX)/bin ] || mkdir -p $(INSTALL_PREFIX)/bin
 	install ./src/lzfse.h $(INSTALL_PREFIX)/include/lzfse.h
+	install ./src/lzvn.h $(INSTALL_PREFIX)/include/lzvn.h
 	install $(LZFSE_LIB) $(INSTALL_PREFIX)/lib/liblzfse.a
 	install $(LZFSE_CMD) $(INSTALL_PREFIX)/bin/lzfse
 
