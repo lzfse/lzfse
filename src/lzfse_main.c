@@ -54,6 +54,11 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #  include <unistd.h>
 #endif
 
+// Avoid zero for malloc and realloc
+static inline size_t avoidzero(size_t s){ return s ? s : 1; }
+#define realloc(X, S)  realloc(X, avoidzero(S))
+#define malloc(S)      malloc(avoidzero(S))
+
 // Same as realloc(x,s), except x is freed when realloc fails
 static inline void *lzfse_reallocf(void *x, size_t s) {
   void *y = realloc(x, s);
@@ -184,7 +189,7 @@ int main(int argc, char **argv) {
       fprintf(stderr, "File is too large\n");
       exit(1);
     }
-    in_allocated = (size_t)st.st_size;
+    in_allocated = avoidzero(st.st_size);
   } else {
     // Otherwise, read from stdin, and allocate to 1 MB, grow as needed
     in_allocated = 1 << 20;
