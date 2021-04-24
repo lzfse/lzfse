@@ -241,6 +241,11 @@ int main(int argc, char **argv) {
   //  and that decode grows by no more than 4x.  These are reasonable common-
   //  case guidelines, but are not formally guaranteed to be satisfied.
   size_t out_allocated = (op == LZFSE_ENCODE) ? in_size : (4 * in_size);
+  //  Fast fail for zero length decode inputs.
+  if (op == LZFSE_DECODE && out_allocated == 0) {
+    fprintf(stderr, "Invalid input\n");
+    exit(1);
+  }
   size_t out_size = 0;
   size_t aux_allocated = (op == LZFSE_ENCODE) ? lzfse_encode_scratch_size()
                                               : lzfse_decode_scratch_size();
@@ -257,13 +262,21 @@ int main(int argc, char **argv) {
 
   double c0 = get_time();
   while (1) {
-    if (op == LZFSE_ENCODE)
+    if (op == LZFSE_ENCODE) {
       out_size = lzfse_encode_buffer(out, out_allocated, in, in_size, aux);
-    else
+    } else {
       out_size = lzfse_decode_buffer(out, out_allocated, in, in_size, aux);
+      if (out_size == 0) {
+        // As we have already fast failed out_allocated zero values, an out_size zero
+        // value indicates a decoding failure/ invalid input.
+        fprintf(stderr, "Invalid input\n");
+        exit(1);
+      }
+    }
 
     // If output buffer was too small, grow and retry.
-    if (out_size == 0 || (op == LZFSE_DECODE && out_size == out_allocated)) {
+    if ((op == LZFSE_ENCODE && out_size == 0) ||
+        (op == LZFSE_DECODE && out_size == out_allocated)) {
       if (verbosity > 0)
         fprintf(stderr, "Output buffer was too small, increasing size...\n");
       out_allocated <<= 1;
