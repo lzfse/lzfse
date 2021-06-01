@@ -71,3 +71,4 @@ Bindings
 
 Python: [dimkr/pylzfse](https://github.com/dimkr/pylzfse)
 
+Ruby: [woodruffw/lzfse.rb](https://github.com/woodruffw/lzfse.rb)
