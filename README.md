@@ -2,7 +2,7 @@ LZFSE
 =====
 
 This is a reference C implementation of the LZFSE compressor introduced in the
-[Compression library](https://developer.apple.com/library/mac/documentation/Performance/Reference/Compression/index.html) with OS X 10.11 and iOS 9.
+[Compression library](https://developer.apple.com/documentation/compression/) with OS X 10.11 and iOS 9.
 
 LZFSE is a Lempel-Ziv style data compression algorithm using Finite State Entropy coding.
 It targets similar compression rates at higher compression and decompression speed compared to deflate using zlib.
@@ -32,7 +32,7 @@ Files
     
     src/lzfse_main.c                      Command line tool
 
-Building on OS X
+Building on macOS
 ----------------
 
     $ xcodebuild install DSTROOT=/tmp/lzfse.dst
