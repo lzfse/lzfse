@@ -1,0 +1,38 @@
+* Mon May 22 2017 Apple Inc. <lzfse@apple.com> 1.0-1
+- OS X -> macOS where appropriate
+
+* Sun May 07 2017 Apple Inc. <lzfse@apple.com> 1.0
+-  fixed a typo in block max size
+-  Allow LZVN to work with inputs shorter than 8 bytes.
+-  Improved frequency normalization algorithm
+-  Do not waste time searching for length 3 matches
+-  Fix a merge conflict in the licence file
+-  Converted readme to markdown, added some further information and fixed description of two files being mixed up
+-  lzfse_fse.h: correctly detect 64-bit stream for debug macro
+-  Fix fse_normalize_freq() when passed alphabet with no used symbols
+-  reformatted LICENSE
+-  merged nemequ changes; fixed end of stream reservation size in LZVN partial encoder; fixed Xcode project with updated README.md file
+-  Added bindings section in README, link to pylzfse
+-  Add CMake build system.
+-  Added cmake instructions to README
+-  Add extern declarations for linking into C++ code.
+-  Avoid pointer arithmetic on void pointers
+-  Implement GCC bit scan builtins for MSVC
+-  Fix issues related to use of __attribute__
+-  Implement jump table as switch for non-GCC
+-  Use ptrdiff_t instead of ssize_t
+-  Add MSVC fixes for timing and file access
+-  Set _POSIX_C_SOURCE to 200112L for gettimeofday
+-  Set binary mode on stdin/stdout on Windows
+-  Update API export to work for CMake and MSVC
+-  Fix label error
+-  Fix 64-bit check for MSVC
+-  Add some tests to verify the build.
+-  Add Travis CI support.
+-  Add AppVeyor builds.
+-  Don't rely on unaligned accesses in the LZVN encoder.
+-  Get Visual Studio 12 working.
+-  Replace #pragma mark with // MARK:
+-  Add const to tables in lzfse_internal.h
+-  Fix #28
+-  Improve patch for #28
