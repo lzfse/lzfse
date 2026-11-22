@@ -362,6 +362,8 @@ FSE_INLINE int fse_in_checked_flush64(fse_in_stream64 *s, const uint8_t **pbuf,
                                       const uint8_t *buf_start) {
   //  Get number of bits to add to bring us into the desired range.
   fse_bit_count nbits = (63 - s->accum_nbits) & -8;
+  if (nbits == 0)
+    return 0;
   //  Convert bits to bytes and decrement buffer address, then load new data.
   const uint8_t *buf = (*pbuf) - (nbits >> 3);
   if (buf < buf_start) {
